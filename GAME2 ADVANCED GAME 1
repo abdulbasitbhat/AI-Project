@@ -1,0 +1,113 @@
+'''Machine Learning code'''
+import os
+import time
+count = 1
+'''This is the 2 laned path depicted by arr1 and arr2 are 2 roads. b are obstacles'''
+arr1 = [' ', ' ', ' ', 'b', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'b', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'b', ' ',
+        ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',' ', ' ', ' ', 'b', '', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'b', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'b', ' ',
+        ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
+arr2 = [' ', ' ', ' ', ' ', ' ', 'b', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'b', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',
+        ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'b',' ', ' ', ' ', ' ', ' ', 'b', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'b', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',
+        ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'b']
+pos = 0
+obs=0
+
+'''This function moves the player forward. It is called by the main function if no obstacle in front'''
+def move(count):
+    if count == 1:
+        arr1[pos + 1] = 'a'
+        arr1[pos] = ' '
+        arr1[0]=' '
+    else:
+        arr2[pos + 1] = 'a'
+        arr2[pos] = ' '
+
+'''Checks if next element on the present path is free or an obstacle is in front. Count stores the lane number'''
+def nextSafe(count):
+    if count == 1:
+        if arr1[pos + 1] == ' ':
+            return 1
+        else:
+            return 0
+
+    if count == 2:
+        if arr2[pos + 1] == ' ':
+            return 1
+        else:
+            return 0
+
+'''This function works when an obstacle is in front. If the obstacle was previously detected then the player changes lane by it'''
+'''If the swapped pos also has obstacle the the player breaks it'''
+def swap(count):
+    if count == 1:
+        if (arr2[pos] == 'b'):
+            print('Blocked')
+            print('Can do nothing, breking obstacle==--> OH NO I Scratcheddd my car')
+            time.sleep(1)
+        arr2[pos] = 'a'
+        arr1[pos] = ' '
+
+    else:
+        if (arr1[pos] == 'b'):
+            print('Blocked')
+            print('Can do nothing, breking obstacle==--> OH NO I Scratcheddd my car')
+            time.sleep(1)
+        arr1[pos] = 'a'
+        arr2[pos] = ' '
+
+'''This prints the first scene'''
+def printt():
+    print('-------------------------------------------')
+    for i in range(1, 50):
+        print(arr1[i],end='')
+    print('')
+    for j in range(1, 50):
+        print(arr2[j],end='')
+    print('')
+    print('-------------------------------------------')
+
+    time.sleep(0.3)
+
+obs_disc1=[]
+obs_disc2=[]
+code=1
+'''Main game loop'''
+'''we have rendered scene upto 58 length only'''
+'''If path is free we simply move'''
+'''If not we check if in that path we have detected it or not. If yes we swap lane else we detect it by putting it in obs_disc1 or obs_disc2 respectively'''
+'''If we had not detected the path previously now we have detected it. Now the game begins again from start with a new knowledge of obstacles'''
+while(code):
+    for i in range(0, 58):
+        if (nextSafe(count) == 1):
+            move(count)
+            pos = pos + 1
+            printt()
+
+        elif(nextSafe(count) == 0 and count == 1 and pos + 1 not in obs_disc1):
+            obs_disc1.append(pos + 1)
+            arr1[pos]=' '
+            pos=0
+            i=0
+        elif (nextSafe(count) == 0 and count == 2 and pos + 1 not in obs_disc2):
+            obs_disc2.append(pos + 1)
+            arr2[pos]=' '
+            pos=0
+            i=0
+        elif (nextSafe(count) == 0 and count == 1 and pos + 1 in obs_disc1):
+            swap(count)
+            if (count == 1):
+                count = 2
+            else:
+                count = 1
+        elif (nextSafe(count) == 0 and count == 2 and pos + 1 in obs_disc2):
+            swap(count)
+            if (count == 1):
+                count = 2
+            else:
+                count = 1
+
+print("Obstacles were at: ")
+print(obs_disc1)
+print(obs_disc2)
+
+print("I escaped but on the way i destroyed a lot of obstacles")
