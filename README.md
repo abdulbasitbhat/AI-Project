@@ -1,2 +1,2 @@
 # AI
-Simulation of relation between Static and Dynamic Environment.
+A Simulation of relation between Static and Dynamic Environments using an example of Car-Obstacle Simulation.
